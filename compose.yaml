@@ -1,0 +1,38 @@
+services:
+  smarthub-app:
+    container_name: smarthub-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT}:8088"
+    volumes:
+      - ./:/app
+    environment:
+      DB_DSN: ${DB_DSN}
+    depends_on:
+      - db
+      - migrations
+    restart: always
+
+  db:
+    container_name: smarthub-db
+    image: postgres:17.4
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: unless-stopped
+
+  migrations:
+    container_name: smarthub-migrations
+    build:
+      context: .
+    command: bash -c 'while !</dev/tcp/db/${POSTGRES_PORT}; do sleep 1; done; alembic upgrade head'
+    restart: "no"
+    environment:
+      DB_DSN: ${DB_DSN}
+    depends_on:
+      - db

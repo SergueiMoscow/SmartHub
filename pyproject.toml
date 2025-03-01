@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "smarthub"
+version = "0.1.0"
+description = ""
+authors = ["sergey <sbitza@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.8"
+uvicorn = "^0.34.0"
+alembic = "^1.14.1"
+asyncpg = "^0.30.0"
+psycopg2 = "^2.9.10"
+fastapi-users = {extras = ["sqlalchemy"], version = "^14.0.1"}
+pydantic-settings = "^2.8.0"
+aio-pika = "^9.5.5"
+paho-mqtt = "^2.1.0"
+pytz = "^2025.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
