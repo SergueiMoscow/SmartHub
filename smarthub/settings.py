@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     RABBITMQ_PORT: int = 1883
     RABBITMQ_USER: str = 'guest'
     RABBITMQ_PASSWORD: str = 'guest'
+
+    RABBITMQ_API_PORT: int = 15672
+
     TOPIC: str = '#'
 
     PER_PAGE: int = 10

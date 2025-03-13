@@ -26,13 +26,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     restart: unless-stopped
 
-  migrations:
-    container_name: smarthub-migrations
-    build:
-      context: .
-    command: bash -c 'while !</dev/tcp/db/${POSTGRES_PORT}; do sleep 1; done; alembic upgrade head'
-    restart: "no"
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: smarthub-rabbitmq
+    hostname: rabbitmq
+    restart: unless-stopped
     environment:
-      DB_DSN: ${DB_DSN}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"  # AMQP
+      - "15672:15672"  # Web UI
+      - "1883:1883"  # MQTT
+      - "8883:8883"  # MQTT over SSL
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    command: sh -c "rabbitmq-plugins enable rabbitmq_mqtt && rabbitmq-server"
     depends_on:
       - db

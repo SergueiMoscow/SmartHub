@@ -5,6 +5,7 @@ from paho.mqtt import client as mqtt_client
 
 from smarthub.db.connector import Session
 from smarthub.db.models import DeviceData
+from smarthub.services.utils import is_json
 from smarthub.settings import settings
 from smarthub.setup_logger import setup_logger
 
@@ -58,7 +59,8 @@ def on_message(client: mqtt_client.Client, userdata, msg):
     else:
         # Логируем и сохраняем сообщение в базу данных
         logger.info(f"Received `{payload}` from `{topic}` topic")
-        save_to_db(topic, payload)
+        if is_json(payload):
+            save_to_db(topic, payload)
 
 
 def subscribe(client: mqtt_client.Client):
