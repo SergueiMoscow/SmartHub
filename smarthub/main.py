@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from sqladmin import Admin
+
+from smarthub.db.db import engine
 from smarthub.mqtt.mqtt_client import start_mqtt_client, stop_mqtt_client
+from smarthub.services.admin import AdminAuth, UserAdmin
 from smarthub.settings import settings
 import uvicorn
 
@@ -13,6 +18,8 @@ async def lifespan(app: FastAPI):
     await stop_mqtt_client(app.state.mqtt_client)
 
 app = FastAPI(lifespan=lifespan)
+admin = Admin(app, engine, authentication_backend=AdminAuth())
+admin.add_view(UserAdmin)
 
 @app.get("/")
 async def root():

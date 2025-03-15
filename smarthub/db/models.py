@@ -1,13 +1,22 @@
 import datetime
 
-from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy import Column, String, JSON, DateTime, BigInteger
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, JSON, DateTime, BigInteger, Integer
+
+from smarthub.settings import settings
 
 Base = declarative_base()
 
-class User(SQLAlchemyBaseUserTableUUID, Base):
+# Модель пользователя
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = {"schema": settings.DATABASE_SCHEMA}  # Указываем схему
+    id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String)
+
+# class User(SQLAlchemyBaseUserTableUUID, Base):
+#     username = Column(String, unique=True, nullable=False)
 
 class DeviceData(Base):
     __tablename__ = "device_data"
