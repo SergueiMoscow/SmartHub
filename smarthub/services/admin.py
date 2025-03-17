@@ -12,7 +12,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class AdminAuth(AuthenticationBackend):
     def __init__(self):
-        super().__init__(secret_key=settings.KEY)  # Корректно передаём secret_key
+        super().__init__(secret_key=settings.SECRET_KEY)
 
     async def login(self, request):
         form = await request.form()

@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     DB_DSN: str = ''
     DB_TEST_DSN: str = ''
     DATABASE_SCHEMA: str = 'public'
-    KEY: str = ''
+    SECRET_KEY: str = ''
     SWAGGER_URL: str | None = None
     REDOC_URL: str | None = None
     # RabbitMQ
@@ -32,6 +32,10 @@ class Settings(BaseSettings):
         env_file_encoding='utf-8',
         extra='allow',
     )
+
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
 
 settings = Settings()
