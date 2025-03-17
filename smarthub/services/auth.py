@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel
 from typing import Annotated
 
@@ -29,13 +29,13 @@ class AuthService:
 
     def create_access_token(self, data: dict, expires_delta: timedelta) -> str:
         to_encode = data.copy()
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
     def create_refresh_token(self, data: dict, expires_delta: timedelta) -> str:
         to_encode = data.copy()
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 

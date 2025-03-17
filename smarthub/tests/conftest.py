@@ -1,4 +1,5 @@
 import os
+from unittest.mock import AsyncMock
 
 import pytest
 from httpx import AsyncClient
@@ -24,7 +25,7 @@ def apply_migrations():
         session.commit()
 
     alembic_cfg = Config(alembic_ini)
-    alembic_cfg.set_main_option('script_location', os.path.join(ROOT_DIR, 'migrations'))
+    alembic_cfg.set_main_option('script_location', os.path.join(ROOT_DIR, 'alembic'))
     command.downgrade(alembic_cfg, 'base')
     command.upgrade(alembic_cfg, 'head')
 
@@ -54,10 +55,14 @@ def user_repo(db_session):
 
 
 # Переопределяем AuthService
-@pytest.fixture
-def auth_service(user_repo):
-    return AuthService(user_repo=user_repo)
+# @pytest.fixture
+# def auth_service(user_repo):
+#     return AuthService(user_repo=user_repo)
 
+@pytest.fixture
+def auth_service():
+    user_repo = AsyncMock(spec=UserRepository)
+    return AuthService(user_repo=user_repo)
 
 # Фикстура для HTTP-клиента
 @pytest.fixture
